@@ -53,14 +53,12 @@ cp -R humanizer-ua/skills/humanizer-ua ~/.claude/skills/
 
 ### Claude.ai
 
-Зберіть ZIP із кореня репозиторію:
+1. Завантажте готовий архів
+   [humanizer-ua.zip](https://github.com/Vicarta/humanizer-ua/releases/latest/download/humanizer-ua.zip).
+2. Відкрийте **Settings → Capabilities → Skills**.
+3. Натисніть **Upload skill** і виберіть завантажений ZIP.
 
-```bash
-python3 scripts/build_release_zip.py
-```
-
-Потім завантажте `dist/humanizer-ua.zip` через **Settings → Capabilities →
-Skills → Upload skill**.
+Розпаковувати архів або встановлювати Python не потрібно.
 
 ## Встановлення в Codex
 
