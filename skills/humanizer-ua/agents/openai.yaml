@@ -1,0 +1,7 @@
+interface:
+  display_name: "Humanizer UA"
+  short_description: "Оживлює український текст без зміни фактів"
+  default_prompt: "Use $humanizer-ua to rewrite this Ukrainian text naturally without changing its facts."
+policy:
+  allow_implicit_invocation: true
+

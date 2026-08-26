@@ -1,19 +1,6 @@
-# Python
-.venv/
 __pycache__/
-*.pyc
-.pytest_cache/
-
-# eval артефакты (генерируемые)
-eval/out/
-*.local.json
-
-# релизный ассет: собирается перед публикацией релиза, в репозитории не живёт
-humanizer-ru.zip
-
-# секреты детекторов / API
-.env
-
-# macOS / локальный тулинг
+*.py[cod]
 .DS_Store
-.claude/
+.venv/
+dist/
+

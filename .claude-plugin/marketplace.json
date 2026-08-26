@@ -1,33 +1,25 @@
 {
-  "name": "ilyautov-plugins",
-  "description": "Plugins by Ilya Utov: humanizer-ru kills AI smell in Russian text | Плагины Ильи Утова: humanizer-ru убирает следы нейросети из русского текста",
+  "name": "vicarta-plugins",
+  "description": "Приватні плагіни Vicarta для Claude Code",
   "owner": {
-    "name": "Ilya Utov",
-    "email": "ilyautov@gmail.com"
+    "name": "Vicarta"
   },
   "plugins": [
     {
-      "name": "humanizer-ru",
-      "displayName": "Humanizer RU",
+      "name": "humanizer-ua",
+      "displayName": "Humanizer UA",
       "source": "./",
-      "description": "Kills AI smell in Russian text. 64 patterns across 14 categories, 20 hard bans, 3 modes (rewrite / audit / targeted fix), voice calibration, quad-pass audit, 2025-2026 stylistic fingerprints. | Убивает запах нейросети в русском тексте. 64 паттерна в 14 категориях, 20 жёстких банов, 3 режима, калибровка голоса, quad-pass аудит, стилистические фингерпринты 2025-2026.",
-      "version": "3.17.0",
+      "description": "Редагує український AI-текст, зберігаючи факти та голос автора.",
+      "version": "1.0.0",
       "author": {
-        "name": "Ilya Utov",
-        "email": "ilyautov@gmail.com"
+        "name": "Vicarta"
       },
-      "homepage": "https://github.com/ilyautov/humanizer-ru",
-      "repository": "https://github.com/ilyautov/humanizer-ru",
+      "homepage": "https://github.com/Vicarta/humanizer-ua",
+      "repository": "https://github.com/Vicarta/humanizer-ua",
       "license": "MIT",
-      "keywords": [
-        "humanizer",
-        "russian",
-        "writing",
-        "ai-detection",
-        "русский",
-        "очеловечивание"
-      ],
+      "keywords": ["humanizer", "ukrainian", "writing", "українська"],
       "category": "writing"
     }
   ]
 }
+

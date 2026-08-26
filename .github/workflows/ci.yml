@@ -1,102 +1,24 @@
 name: CI
 
-# Бесплатный детерминированный гейт: self-test скилла, sanity-скан и
-# eval-харнес в метрики-режиме (без реальных детекторов и LLM-судьи, без
-# ключей и сети). Тяжёлые детекторы (torch/transformers) и облачные API в CI
-# НЕ запускаются — это сделало бы прогон платным и недетерминированным.
-
 on:
   pull_request:
   push:
     branches: [main]
 
 jobs:
-  eval:
+  test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: Set up Python 3.11
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-
-      - name: Install core deps
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Регресс-тесты метрик (test_markers)
-        run: python scripts/test_markers.py
-
-      - name: Регресс-тесты score чистоты (test_score)
-        run: python scripts/test_score.py
-
-      - name: Смоук-тесты CLI-сканера (test_scan)
-        run: python scripts/test_scan.py
-
+      - name: Validate skill
+        run: python3 scripts/lint_skill.py
+      - name: Run tests
+        run: python3 -m unittest discover -s tests -v
       - name: Build release ZIP
-        run: python scripts/build_release_zip.py --output dist/humanizer-ru.zip .
+        run: python3 scripts/build_release_zip.py
+      - name: Smoke-test installed package
+        run: python3 scripts/install_smoke.py --zip dist/humanizer-ua.zip
 
-      - name: Install-smoke release ZIP
-        run: python scripts/install_smoke.py . --zip dist/humanizer-ru.zip
-
-      - name: Install-smoke skill source
-        run: python scripts/install_smoke.py .
-
-      - name: Self-test скилла (lint_skill)
-        run: python scripts/lint_skill.py
-
-      # Гейт честности примеров: в паре «До/После» не может появиться числа,
-      # даты или имени, которых нет в исходнике (Факт-замок). Пример учит
-      # модель сильнее инструкции, поэтому нарушение валит сборку.
-      - name: Факт-замок в собственных примерах (check_examples)
-        run: python scripts/check_examples.py
-
-      # Витрина (README, сайт, SKILL.md, команды) прогоняется через собственные
-      # HARD BANS: скилл не имеет права нарушать то, что требует от других.
-      - name: Self-scan витрины собственными банами (self_scan)
-        run: python scripts/self_scan.py
-
-      - name: Тесты самих гейтов (test_gates)
-        run: python scripts/test_gates.py
-
-      # Шахта паттернов гоняется по внешнему корпусу и в CI не запускается, но
-      # её логика проверяется на синтетическом корпусе: подсаженная фраза должна
-      # находиться, а общая для классов тема не должна выдаваться за стиль.
-      - name: Шахта паттернов на синтетическом корпусе (test_mining)
-        run: python scripts/test_mining.py
-
-      - name: Согласованность релизных чисел (bump_release --check)
-        run: python scripts/bump_release.py --check
-
-      # Счётчик внутри растра social-preview.png раньше отставал молча (52 при
-      # каталоге 58): картинку никто не пересобирал. Гейт сверяет отметку с
-      # каталогом; Pillow для проверки не нужен, только для перерисовки.
-      - name: Свежесть счётчика в social-preview.png
-        run: python scripts/make_social_preview.py --check
-
-      # Цель шага: «сканер запускается и отдаёт валидный JSON», а НЕ «текст чистый».
-      # Exit 1 у scan.py означает «нашёл HARD BANS» — для формального человеческого
-      # текста (Википедия: «является», тире) это штатно (см. eval/RESULTS.md, FP-аудит).
-      - name: Sanity-скан (scan.py запускается и отдаёт валидный JSON)
-        run: |
-          set +e
-          python skills/humanizer-ru/scripts/scan.py eval/corpus/human/wiki_baikal.txt --json > /tmp/scan.json
-          code=$?
-          set -e
-          if [ "$code" -gt 1 ]; then echo "scan.py упал (exit $code)"; exit "$code"; fi
-          python -c "import json; r = json.load(open('/tmp/scan.json')); print('scan ok, hard bans:', r['hard_ban_count'])"
-
-      # Regression-гейт против eval/baseline.json (коммитится): raw AI не должен
-      # терять детекцию, human-контроль не должен получать новые ложные
-      # срабатывания. Обновление эталона: python eval/run_eval.py --save-baseline.
-      - name: Eval-харнес (метрики-only) + regression-гейт
-        run: python eval/run_eval.py --baseline eval/baseline.json
-
-      # Граница активации скилла: детерминированный слой (язык/модальность +
-      # guard scope-фраз в описании из SKILL.md). LLM-роутер опционален и в CI
-      # НЕ гоняется (нужна Ollama/ключ). Падает, если near-miss (код/английский)
-      # принят за триггер или из описания пропала scope-граница.
-      - name: Trigger-eval (граница активации, детерминированный слой)
-        run: python eval/run_triggers.py

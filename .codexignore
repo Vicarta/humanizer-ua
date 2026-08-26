@@ -1,16 +1,4 @@
-# Не входит в пакет скилла: дев-окружение и материалы сайта/исследований
-.venv/
-__pycache__/
-*.pyc
-.DS_Store
-docs/
-eval/
-assets/
-.github/
-.claude/
-.claude-plugin/
-.cursor-plugin/
-gemini-extension.json
-CHANGELOG.md
-SOURCES.md
-CONTRIBUTING.md
+.git/
+dist/
+tests/
+
