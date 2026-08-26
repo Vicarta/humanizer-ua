@@ -1,12 +1,12 @@
 # 🇺🇦 humanizer-ua
 
-> Українська навичка для Codex і Claude, яка повертає текстові природний ритм,
-> ясність і голос автора. Факти залишаються на місці.
+> Українська навичка для Codex, ChatGPT і Claude, яка повертає текстові
+> природний ритм, ясність і голос автора. Факти залишаються на місці.
 
 [![Release](https://img.shields.io/github/v/release/Vicarta/humanizer-ua?display_name=tag)](https://github.com/Vicarta/humanizer-ua/releases/latest)
 [![CI](https://github.com/Vicarta/humanizer-ua/actions/workflows/ci.yml/badge.svg)](https://github.com/Vicarta/humanizer-ua/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-0057B7.svg)](LICENSE)
-[![Claude.ai ZIP](https://img.shields.io/badge/Claude.ai-завантажити_ZIP-FFD700.svg)](https://github.com/Vicarta/humanizer-ua/releases/latest/download/humanizer-ua.zip)
+[![ChatGPT і Claude ZIP](https://img.shields.io/badge/ChatGPT_і_Claude-завантажити_ZIP-FFD700.svg)](https://github.com/Vicarta/humanizer-ua/releases/latest/download/humanizer-ua.zip)
 
 Текст може бути правильним за всіма правилами й усе одно не мати голосу.
 Речення однакової довжини, вступ ні про що, канцелярські іменники замість дій,
@@ -119,6 +119,18 @@ cp -R humanizer-ua/skills/humanizer-ua ~/.codex/skills/
 
 </details>
 
+### ChatGPT
+
+1. Завантажте готовий
+   [humanizer-ua.zip](https://github.com/Vicarta/humanizer-ua/releases/latest/download/humanizer-ua.zip).
+2. У десктопному застосунку ChatGPT відкрийте вкладку **Навички**.
+3. Натисніть **+** праворуч від пошуку й виберіть завантажений ZIP.
+
+На цьому все: розпаковувати архів, клонувати репозиторій або встановлювати
+Python не потрібно. ChatGPT покаже **Humanizer UA** серед установлених навичок.
+
+[Офіційна документація OpenAI про навички в ChatGPT і Codex](https://learn.chatgpt.com/docs/build-skills).
+
 ### Claude.ai
 
 1. Завантажте готовий
@@ -187,7 +199,7 @@ python3 skills/humanizer-ua/scripts/scan.py article.txt --json
 | Каталог | 42 патерни | 64 патерни | залежить від реалізації |
 | Сильні маркери | 20 | 20 | залежить від реалізації |
 | Локальний сканер | без зовнішніх залежностей | російський морфологічний стек | залежить від реалізації |
-| Перевірене пакування | Codex і Claude | кілька агентських платформ | залежить від проєкту |
+| Перевірене пакування | Codex, ChatGPT і Claude | кілька агентських платформ | залежить від проєкту |
 
 `humanizer-ua` не є дослівним перекладом російської версії. Український
 каталог, правила редагування, сканер і тести створено окремо.
@@ -223,9 +235,9 @@ python3 skills/humanizer-ua/scripts/scan.py article.txt --json
 <details>
 <summary><strong>Чи потрібен Python?</strong></summary>
 
-Для роботи навички в Codex або Claude — ні. Python потрібен лише для запуску
-детермінованого сканера та локальних тестів. Сканер використовує стандартну
-бібліотеку й не тягне додаткових пакетів.
+Для роботи навички в Codex, ChatGPT або Claude — ні. Python потрібен лише для
+запуску детермінованого сканера та локальних тестів. Сканер використовує
+стандартну бібліотеку й не тягне додаткових пакетів.
 
 </details>
 
