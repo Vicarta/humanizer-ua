@@ -93,6 +93,32 @@ flowchart LR
 
 ## Встановлення
 
+### Codex
+
+Скопіюйте цей запит у Codex:
+
+```text
+Встанови скіл humanizer-ua з https://github.com/Vicarta/humanizer-ua/tree/main/skills/humanizer-ua
+```
+
+Codex використає системний `$skill-installer`. Навичка буде доступна в
+наступному запиті; якщо вона не з'явилася, перезапустіть Codex.
+[Документація Codex про встановлення skills](https://developers.openai.com/codex/skills/#install-curated-skills-for-local-use).
+
+<details>
+<summary><strong>Встановити в Codex вручну</strong></summary>
+
+```bash
+git clone https://github.com/Vicarta/humanizer-ua.git
+mkdir -p ~/.codex/skills
+cp -R humanizer-ua/skills/humanizer-ua ~/.codex/skills/
+```
+
+Для одного проєкту скопіюйте папку навички в
+`.codex/skills/humanizer-ua`. Явний виклик: `$humanizer-ua`.
+
+</details>
+
 ### Claude.ai
 
 1. Завантажте готовий
@@ -118,18 +144,6 @@ git clone https://github.com/Vicarta/humanizer-ua.git
 mkdir -p ~/.claude/skills
 cp -R humanizer-ua/skills/humanizer-ua ~/.claude/skills/
 ```
-
-### Codex
-
-```bash
-git clone https://github.com/Vicarta/humanizer-ua.git
-mkdir -p ~/.codex/skills
-cp -R humanizer-ua/skills/humanizer-ua ~/.codex/skills/
-```
-
-Для одного проєкту скопіюйте папку навички в
-`.codex/skills/humanizer-ua`. Після встановлення перезапустіть Codex. Явний
-виклик: `$humanizer-ua`.
 
 ## Що показує сканер
 
@@ -173,7 +187,7 @@ python3 skills/humanizer-ua/scripts/scan.py article.txt --json
 | Каталог | 42 патерни | 64 патерни | залежить від реалізації |
 | Сильні маркери | 20 | 20 | залежить від реалізації |
 | Локальний сканер | без зовнішніх залежностей | російський морфологічний стек | залежить від реалізації |
-| Перевірене пакування | Claude і Codex | кілька агентських платформ | залежить від проєкту |
+| Перевірене пакування | Codex і Claude | кілька агентських платформ | залежить від проєкту |
 
 `humanizer-ua` не є дослівним перекладом російської версії. Український
 каталог, правила редагування, сканер і тести створено окремо.
@@ -209,7 +223,7 @@ python3 skills/humanizer-ua/scripts/scan.py article.txt --json
 <details>
 <summary><strong>Чи потрібен Python?</strong></summary>
 
-Для роботи навички в Claude або Codex — ні. Python потрібен лише для запуску
+Для роботи навички в Codex або Claude — ні. Python потрібен лише для запуску
 детермінованого сканера та локальних тестів. Сканер використовує стандартну
 бібліотеку й не тягне додаткових пакетів.
 
@@ -236,7 +250,7 @@ python3 skills/humanizer-ua/scripts/scan.py article.txt --json
 <summary><strong>Чи можна користуватися без плагіна?</strong></summary>
 
 Так. Достатньо скопіювати всю папку `skills/humanizer-ua` в каталог навичок
-Claude або Codex. Важливо копіювати папку цілком, бо разом із `SKILL.md` у ній
+Codex або Claude. Важливо копіювати папку цілком, бо разом із `SKILL.md` у ній
 лежать каталог патернів і сканер.
 
 </details>
@@ -245,7 +259,7 @@ Claude або Codex. Важливо копіювати папку цілком, 
 <summary><strong>Що відбувається з моїм текстом?</strong></summary>
 
 Сканер працює локально, не має телеметрії та нічого не надсилає в мережу.
-Обробка самим Claude або Codex підпорядковується політиці сервісу, у якому ви
+Обробка самим Codex або Claude підпорядковується політиці сервісу, у якому ви
 запустили навичку.
 
 </details>
