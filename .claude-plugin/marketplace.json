@@ -10,7 +10,7 @@
       "displayName": "Humanizer UA",
       "source": "./",
       "description": "Редагує український AI-текст, зберігаючи факти та голос автора.",
-      "version": "1.0.2",
+      "version": "1.0.3",
       "author": {
         "name": "Vicarta"
       },

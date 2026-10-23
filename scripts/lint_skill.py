@@ -12,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 SKILL = ROOT / "skills" / "humanizer-ua" / "SKILL.md"
 CATALOG = ROOT / "skills" / "humanizer-ua" / "references" / "catalog.md"
-EXPECTED_PATTERNS = 42
+EXPECTED_PATTERNS = 46
 EXPECTED_HARD_RULES = 20
 
 
@@ -40,7 +40,7 @@ def main() -> int:
 
     if len(scan.HARD_RULES) != EXPECTED_HARD_RULES:
         errors.append(f"сильних правил {len(scan.HARD_RULES)}, очікувалося {EXPECTED_HARD_RULES}")
-    if scan.VERSION != "1.0.2" or "v1.0.2" not in skill_text:
+    if scan.VERSION != "1.0.3" or "v1.0.3" not in skill_text:
         errors.append("версії skill і scanner не збігаються")
 
     for manifest in (

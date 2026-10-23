@@ -2,7 +2,7 @@
   "name": "humanizer-ua",
   "displayName": "Humanizer UA",
   "description": "Редагує український AI-текст: прибирає шаблонність, канцелярит і кальки, зберігаючи факти та голос автора.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": {
     "name": "Vicarta"
   },
