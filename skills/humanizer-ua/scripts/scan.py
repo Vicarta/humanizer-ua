@@ -17,7 +17,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 
 
-VERSION = "1.0.3"
+VERSION = "1.0.4"
 GENRES = ("marketing", "neutral", "academic", "legal", "fiction")
 WORD_RE = re.compile(r"[A-Za-zА-Яа-яІіЇїЄєҐґ]+(?:['’][A-Za-zА-Яа-яІіЇїЄєҐґ]+)?")
 

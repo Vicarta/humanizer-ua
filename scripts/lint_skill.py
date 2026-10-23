@@ -40,7 +40,7 @@ def main() -> int:
 
     if len(scan.HARD_RULES) != EXPECTED_HARD_RULES:
         errors.append(f"сильних правил {len(scan.HARD_RULES)}, очікувалося {EXPECTED_HARD_RULES}")
-    if scan.VERSION != "1.0.3" or "v1.0.3" not in skill_text:
+    if scan.VERSION != "1.0.4" or "v1.0.4" not in skill_text:
         errors.append("версії skill і scanner не збігаються")
 
     for manifest in (
