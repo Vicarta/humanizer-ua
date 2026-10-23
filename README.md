@@ -317,6 +317,8 @@ python3 scripts/install_smoke.py --zip dist/humanizer-ua.zip
 CI перевіряє frontmatter навички, нумерацію каталогу, маніфести JSON,
 регресійні тести сканера, релізний ZIP та встановлення з чистої копії.
 
+Новий або змінений текст у `README.md` редагуємо через `humanizer-ua`.
+
 Історія змін: [CHANGELOG.md](CHANGELOG.md).
 
 ## Походження
