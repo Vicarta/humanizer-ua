@@ -26,6 +26,26 @@ class ScannerTests(unittest.TestCase):
         self.assertEqual(report["hard_ban_count"], 0)
         self.assertGreaterEqual(report["score"]["value"], 85)
 
+    def test_protected_markdown_is_excluded_from_rules_and_metrics(self) -> None:
+        text = (
+            "> Варто зазначити, що цитата містить маркер.\n"
+            "```text\n"
+            "У сучасному світі. — Сприяє підвищенню результату.\n"
+            "```\n"
+            "   ~~~text\n"
+            "Необхідно підкреслити. — Дозволяє ефективно працювати.\n"
+            "   ~~~\n"
+            "У фрагменті `у сучасному світі` теж є захищений маркер.\n"
+            "Варто зазначити, що це видима проза."
+        )
+        report = scan.analyze(text, "neutral")
+
+        self.assertEqual(report["hard_ban_count"], 1)
+        self.assertEqual(report["hard_bans"][0]["lines"], [9])
+        self.assertIn("Варто зазначити, що це видима проза", report["hard_bans"][0]["examples"][0])
+        self.assertEqual(report["metrics"]["em_dashes"], 0)
+        self.assertEqual(report["word_count"], 12)
+
     def test_hard_markers_reduce_score(self) -> None:
         report = scan.analyze(
             "У сучасному світі сервіс є потужним інструментом і відкриває нові горизонти.",

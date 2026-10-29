@@ -17,7 +17,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 
 
-VERSION = "1.0.4"
+VERSION = "1.0.5"
 GENRES = ("marketing", "neutral", "academic", "legal", "fiction")
 WORD_RE = re.compile(r"[A-Za-zА-Яа-яІіЇїЄєҐґ]+(?:['’][A-Za-zА-Яа-яІіЇїЄєҐґ]+)?")
 
@@ -92,6 +92,11 @@ SOFT_RULES = (
 
 ALL_RULES = HARD_RULES + SOFT_RULES
 COMPILED = {rule.code: re.compile(rule.pattern, re.IGNORECASE | re.DOTALL) for rule in ALL_RULES}
+FENCE_OPEN_RE = re.compile(r" {0,3}(`{3,}|~{3,})(.*)$")
+FENCE_CLOSE_RE = re.compile(r" {0,3}(`+|~+)[ \t]*$")
+BLOCKQUOTE_RE = re.compile(r" {0,3}>")
+BACKTICK_RUN_RE = re.compile(r"`+")
+PROTECTED = "\0"
 
 NOMINAL_SUFFIXES = ("ння", "ття", "ізація", "ування", "ювання", "ення", "ання")
 VERB_SUFFIXES = (
@@ -122,11 +127,69 @@ def compact_example(text: str, start: int, end: int) -> str:
     return excerpt[:120]
 
 
-def scan_rules(text: str, genre: str) -> tuple[list[Hit], int]:
+def mask_protected_markdown(text: str) -> str:
+    """Hide basic Markdown code and explicit blockquote lines without shifting offsets."""
+    chars = list(text)
+    fence: tuple[str, int] | None = None
+    offset = 0
+
+    def mask(start: int, end: int) -> None:
+        for position in range(start, end):
+            if chars[position] not in "\r\n":
+                chars[position] = PROTECTED
+
+    for line in text.splitlines(keepends=True):
+        content = line.rstrip("\r\n")
+        opening = FENCE_OPEN_RE.match(content)
+
+        if fence is not None:
+            mask(offset, offset + len(line))
+            closing = FENCE_CLOSE_RE.fullmatch(content)
+            if closing and closing.group(1)[0] == fence[0] and len(closing.group(1)) >= fence[1]:
+                fence = None
+        elif opening and not (opening.group(1)[0] == "`" and "`" in opening.group(2)):
+            fence = (opening.group(1)[0], len(opening.group(1)))
+            mask(offset, offset + len(line))
+        elif BLOCKQUOTE_RE.match(content):
+            mask(offset, offset + len(line))
+        else:
+            runs = list(BACKTICK_RUN_RE.finditer(content))
+            index = 0
+            while index < len(runs):
+                end_index = next(
+                    (candidate for candidate in range(index + 1, len(runs))
+                     if len(runs[candidate].group()) == len(runs[index].group())),
+                    None,
+                )
+                if end_index is None:
+                    index += 1
+                    continue
+                mask(offset + runs[index].start(), offset + runs[end_index].end())
+                index = end_index + 1
+        offset += len(line)
+
+    return "".join(chars)
+
+
+def scan_rules(text: str, genre: str, masked_text: str | None = None) -> tuple[list[Hit], int]:
+    masked = masked_text if masked_text is not None else mask_protected_markdown(text)
+    visible_ranges: list[tuple[int, int]] = []
+    range_start = 0
+    for match in re.finditer(PROTECTED + r"+", masked):
+        if range_start < match.start():
+            visible_ranges.append((range_start, match.start()))
+        range_start = match.end()
+    if range_start < len(masked):
+        visible_ranges.append((range_start, len(masked)))
+
     hits: list[Hit] = []
     muted_count = 0
     for rule in ALL_RULES:
-        matches = list(COMPILED[rule.code].finditer(text))
+        matches = [
+            (match.start(), match.end())
+            for offset, end in visible_ranges
+            for match in COMPILED[rule.code].finditer(masked, offset, end)
+        ]
         if not matches:
             continue
         if genre in rule.muted:
@@ -138,8 +201,8 @@ def scan_rules(text: str, genre: str) -> tuple[list[Hit], int]:
                 category=rule.category,
                 label=rule.label,
                 count=len(matches),
-                lines=sorted({line_number(text, match.start()) for match in matches}),
-                examples=[compact_example(text, match.start(), match.end()) for match in matches[:2]],
+                lines=sorted({line_number(text, start) for start, _ in matches}),
+                examples=[compact_example(text, start, end) for start, end in matches[:2]],
             )
         )
     return hits, muted_count
@@ -238,9 +301,11 @@ def score_report(hits: list[Hit], metrics: dict[str, object], word_count: int) -
 
 
 def analyze(text: str, genre: str) -> dict[str, object]:
-    words = WORD_RE.findall(text)
-    hits, muted_count = scan_rules(text, genre)
-    metrics = structural_metrics(text, words)
+    masked_text = mask_protected_markdown(text)
+    plain_text = masked_text.replace(PROTECTED, " ")
+    words = WORD_RE.findall(plain_text)
+    hits, muted_count = scan_rules(text, genre, masked_text)
+    metrics = structural_metrics(plain_text, words)
     score, band, penalties = score_report(hits, metrics, len(words))
     hard_hits = [hit for hit in hits if hit.code.startswith("H")]
     soft_hits = [hit for hit in hits if hit.code.startswith("S")]
@@ -255,7 +320,7 @@ def analyze(text: str, genre: str) -> dict[str, object]:
         "markers": [asdict(hit) for hit in soft_hits],
         "muted_by_genre": muted_count,
         "metrics": metrics,
-        "warning": language_warning(text, words),
+        "warning": language_warning(plain_text, words),
         "disclaimer": "Редакторська оцінка, не визначення авторства і не ймовірність AI.",
     }
 
