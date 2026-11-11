@@ -130,13 +130,15 @@ cp -R humanizer-ua/skills/humanizer-ua ~/.codex/skills/
 
 ### ChatGPT
 
-1. Завантажте готовий
-   [humanizer-ua.zip](https://github.com/Vicarta/humanizer-ua/releases/latest/download/humanizer-ua.zip).
-2. У десктопному застосунку ChatGPT відкрийте вкладку **Навички**.
-3. Натисніть **+** праворуч від пошуку й виберіть завантажений ZIP.
+Завантажте [humanizer-ua.zip](https://github.com/Vicarta/humanizer-ua/releases/latest/download/humanizer-ua.zip).
+Розпаковувати архів не потрібно.
 
-На цьому все: розпаковувати архів, клонувати репозиторій або встановлювати
-Python не потрібно. ChatGPT покаже **Humanizer UA** серед установлених навичок.
+1. У десктопному застосунку ChatGPT перейдіть у режим **Робота**.
+2. Відкрийте **Плагіни** й перейдіть на вкладку **Навички**.
+3. Натисніть **Додати** й виберіть **Завантажити з комп’ютера**.
+4. Виберіть завантажений файл `humanizer-ua.zip`.
+
+Після завантаження **Humanizer UA** з’явиться серед установлених навичок.
 
 [Офіційна документація OpenAI про навички в ChatGPT і Codex](https://learn.chatgpt.com/docs/build-skills).
 
